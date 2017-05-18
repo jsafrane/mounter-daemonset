@@ -1,0 +1,22 @@
+#!/bin/bash -x
+
+if [ ! -e /etc/iscsi ]; then
+    mkdir -m 755 /etc/iscsi
+fi
+
+if [ ! -e /etc/iscsi/initiatorname.iscsi ]; then
+    NAME=$( iscsi-iname )
+    echo "InitiatorName=$NAME" > /etc/iscsi/initiatorname.iscsi
+fi
+
+if [ ! -e /etc/iscsi/iscsid.conf ]; then
+    cp /etc/iscsi-save/iscsid.conf /etc/iscsi/iscsid.conf
+fi
+
+# for iSCSI
+iscsid
+
+# for NFSv3
+rpcbind
+rpc.statd
+rpc.mountd
