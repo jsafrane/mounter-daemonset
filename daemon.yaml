@@ -11,6 +11,7 @@ spec:
           "mount.kubernetes.io/nfs": "true"
           "mount.kubernetes.io/rbd": "true"
           "mount.kubernetes.io/cephfs": "true"
+          "mount.kubernetes.io/iscsi": "true"
       spec:
         containers:
          - name: mounter
@@ -20,8 +21,29 @@ spec:
            volumeMounts:
              - name: kubelet
                mountPath: /var/lib/kubelet
+             - name: sys
+               mountPath: /sys
+             - name: dev
+               mountPath: /dev
+             - name: iscsi
+               mountPath: /etc/iscsi
+             - name: iscsilock
+               mountPath: /run/lock/iscsi
+           imagePullPolicy: Never
         volumes:
           - name: kubelet
             hostPath:
               path: /var/lib/kubelet
-
+          - name: sys
+            hostPath:
+              path: /sys
+          - name: dev
+            hostPath:
+              path: /dev
+          - name: iscsi
+            hostPath:
+              path: /etc/iscsi
+          - name: iscsilock
+            hostPath:
+              path: /run/lock/iscsi
+        hostNetwork: true
