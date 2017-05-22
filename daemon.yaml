@@ -13,6 +13,7 @@ spec:
           "mount.kubernetes.io/cephfs": "true"
           "mount.kubernetes.io/iscsi": "true"
       spec:
+        hostNetwork: true
         containers:
          - name: mounter
            image: jsafrane/mounter-daemonset:latest
@@ -29,6 +30,8 @@ spec:
                mountPath: /etc/iscsi
              - name: iscsilock
                mountPath: /run/lock/iscsi
+             - name: modules
+               mountPath: /lib/modules
            imagePullPolicy: Never
         volumes:
           - name: kubelet
@@ -46,4 +49,6 @@ spec:
           - name: iscsilock
             hostPath:
               path: /run/lock/iscsi
-        hostNetwork: true
+          - name: modules
+            hostPath:
+              path: /lib/modules
