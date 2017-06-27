@@ -12,6 +12,8 @@ spec:
           "mount.kubernetes.io/rbd": "true"
           "mount.kubernetes.io/cephfs": "true"
           "mount.kubernetes.io/iscsi": "true"
+        annotations:
+          "volume.alpha.kubernetes.io/propagation": '{"mounter": {"kubelet": "rshared"}}'
       spec:
         hostNetwork: true
         containers:
@@ -32,7 +34,6 @@ spec:
                mountPath: /run/lock/iscsi
              - name: modules
                mountPath: /lib/modules
-           imagePullPolicy: Never
         volumes:
           - name: kubelet
             hostPath:
