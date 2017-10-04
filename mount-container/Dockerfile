@@ -19,8 +19,10 @@ FROM fedora:25
 RUN yum -y install hostname glusterfs-client busybox nfs-utils ceph-common iscsi-initiator-utils && yum clean all
 # for debugging
 RUN yum -y install net-tools procps-ng psmisc && yum clean all
+
 RUN mv  /etc/iscsi /etc/iscsi-save
 COPY inittab /etc/
 COPY rc.local /etc/rc.d/
+COPY register-mount-container /usr/bin
 
 ENTRYPOINT ["busybox", "init"]

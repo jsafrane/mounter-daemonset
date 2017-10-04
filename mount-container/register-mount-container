@@ -1,0 +1,20 @@
+#!/bin/sh
+
+base=/var/lib/kubelet/plugin-containers
+
+mkdir -p -m 700 $base
+
+for plugin in kubernetes.io~iscsi kubernetes.io~glusterfs kubernetes.io~nfs kubernetes.io~ceph kubernetes.io~rbd kubernetes.io~cephfs; do
+    tempname="$base/.tmp.$plugin.json"
+    regname="$base/$plugin.json"
+    # create $regname atomically using /bin/mv
+    /bin/cat >$tempname <<EOF
+{
+    "podNamespace": "$MOUNT_POD_NAMESPACE",
+    "podName": "$MOUNT_POD_NAME",
+    "podUID": "$MOUNT_POD_UID",
+    "containerName": "$MOUNT_CONTAINER_NAME"
+}
+EOF
+    /bin/mv -f $tempname $regname
+done

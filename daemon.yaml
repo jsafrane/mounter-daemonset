@@ -1,29 +1,27 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-    name: mount
-    namespace: kube-mount
+    name: mounter
 spec:
+    selector:
+      matchLabels:
+        name: mounter
     template:
       metadata:
         labels:
-          "mount.kubernetes.io/glusterfs": "true"
-          "mount.kubernetes.io/nfs": "true"
-          "mount.kubernetes.io/rbd": "true"
-          "mount.kubernetes.io/cephfs": "true"
-          "mount.kubernetes.io/iscsi": "true"
-        annotations:
-          "volume.alpha.kubernetes.io/propagation": '{"mounter": {"kubelet": "rshared"}}'
+          name: mounter
       spec:
         hostNetwork: true
         containers:
          - name: mounter
            image: jsafrane/mounter-daemonset:latest
+           imagePullPolicy: IfNotPresent
            securityContext:
              privileged: true
            volumeMounts:
              - name: kubelet
                mountPath: /var/lib/kubelet
+               mountPropagation: Bidirectional
              - name: sys
                mountPath: /sys
              - name: dev
@@ -34,22 +32,40 @@ spec:
                mountPath: /run/lock/iscsi
              - name: modules
                mountPath: /lib/modules
+           env:
+             - name: MOUNT_POD_NAME
+               valueFrom:
+                 fieldRef:
+                   fieldPath:  metadata.name
+             - name: MOUNT_POD_NAMESPACE
+               valueFrom:
+                 fieldRef:
+                   fieldPath:  metadata.namespace
+             - name: MOUNT_POD_UID
+               valueFrom:
+                 fieldRef:
+                   fieldPath:  metadata.uid
+             - name: MOUNT_CONTAINER_NAME
+               value: mounter
         volumes:
           - name: kubelet
             hostPath:
               path: /var/lib/kubelet
-          - name: sys
-            hostPath:
-              path: /sys
+          # for ceph and iscsi
           - name: dev
             hostPath:
               path: /dev
+          # for iscsi
+          - name: sys
+            hostPath:
+              path: /sys
           - name: iscsi
             hostPath:
               path: /etc/iscsi
           - name: iscsilock
             hostPath:
               path: /run/lock/iscsi
+          # for ceph
           - name: modules
             hostPath:
               path: /lib/modules

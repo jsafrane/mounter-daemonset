@@ -20,3 +20,6 @@ iscsid
 rpcbind
 rpc.statd
 rpc.mountd
+
+# register itself
+register-mount-container
