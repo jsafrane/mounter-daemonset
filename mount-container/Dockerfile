@@ -15,7 +15,7 @@
 # This is a simple container image that has utilities for NFS, Gluster and Ceph
 # and runs a minimal init that reaps zombies.
 
-FROM fedora:25
+FROM fedora:27
 RUN yum -y install hostname glusterfs-client busybox nfs-utils ceph-common iscsi-initiator-utils && yum clean all
 # for debugging
 RUN yum -y install net-tools procps-ng psmisc && yum clean all
