@@ -4,7 +4,7 @@ base=/var/lib/kubelet/plugin-containers
 
 mkdir -p -m 700 $base
 
-for plugin in kubernetes.io~iscsi kubernetes.io~glusterfs kubernetes.io~nfs kubernetes.io~ceph kubernetes.io~rbd kubernetes.io~cephfs; do
+for plugin in $*; do
     tempname="$base/.tmp.$plugin.json"
     regname="$base/$plugin.json"
     # create $regname atomically using /bin/mv

@@ -13,8 +13,19 @@ if [ ! -e /etc/iscsi/iscsid.conf ]; then
     cp /etc/iscsi-save/iscsid.conf /etc/iscsi/iscsid.conf
 fi
 
-# for iSCSI
+SUPPORTED_CONTAINERS="kubernetes.io~glusterfs kubernetes.io~nfs kubernetes.io~ceph kubernetes.io~rbd kubernetes.io~cephfs"
+
+
+# Only one iscsid can run on a machine. iscsid will return nozero exit status
+# if it already runs on the host. In this case, don't run it in container
+# and don't report it as supported.
 iscsid
+if [ "$?" -ne "0" ]; then
+    echo "Started iscsid"
+    SUPPORTED_CONTAINERS="$SUPPORTED_CONTAINERS kubernetes.io~iscsi"
+else
+    echo "Could not start iscsid, assuming it runs on the host."
+fi
 
 # for NFSv3
 rpcbind
@@ -22,4 +33,4 @@ rpc.statd
 rpc.mountd
 
 # register itself
-register-mount-container
+register-mount-container $SUPPORTED_CONTAINERS
