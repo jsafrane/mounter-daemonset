@@ -20,7 +20,7 @@ SUPPORTED_CONTAINERS="kubernetes.io~glusterfs kubernetes.io~nfs kubernetes.io~ce
 # if it already runs on the host. In this case, don't run it in container
 # and don't report it as supported.
 iscsid
-if [ "$?" -ne "0" ]; then
+if [ "$?" -eq "0" ]; then
     echo "Started iscsid"
     SUPPORTED_CONTAINERS="$SUPPORTED_CONTAINERS kubernetes.io~iscsi"
 else
