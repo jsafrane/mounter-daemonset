@@ -6,7 +6,7 @@ to mount volumes by Kubernetes on a system that does not have `mount.nfs`,
 1. Get Kubernetes and deploy it somewhere with MountPropagation and MountContainers features enabled, e.g.:
 
    ```shell
-   $ ALLOW_SECURITY_CONTEXT=true ALLOW_PRIVILEGED=true LOG_LEVEL=5 hack/local-up-cluster.sh
+   $ FEATURE_GATES=MountPropagation=true,MountContainers=true ALLOW_SECURITY_CONTEXT=true ALLOW_PRIVILEGED=true LOG_LEVEL=5 hack/local-up-cluster.sh
    ```
 
 2. Deploy the daemon set in `kube-mount` namespace.
